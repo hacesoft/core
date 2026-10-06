@@ -1,0 +1,5 @@
+build/node_modules/
+build/examples/empty-app/node_modules/
+release/
+.build/
+*.log

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>hc_shared_app_core</id>
+    <name>Shared App Core</name>
+    <summary>Shared services and UI foundations for self-hosted applications</summary>
+    <description><![CDATA[Shared, versioned foundations used by multiple Nextcloud applications.]]></description>
+    <version>0.18.0-dev.16</version>
+    <licence>AGPL-3.0-or-later</licence>
+    <author>Pavel Procházka</author>
+    <namespace>HcSharedAppCore</namespace>
+    <category>tools</category>
+    <bugs>https://github.com/hacesoft/hc-shared-app-core/issues</bugs>
+    <repository type="git">https://github.com/hacesoft/hc-shared-app-core.git</repository>
+    <dependencies>
+        <php min-version="8.2"/>
+        <nextcloud min-version="35" max-version="35"/>
+    </dependencies>
+</info>
