@@ -61,7 +61,7 @@ interface ReleaseResponse {
   stale?: boolean
 }
 
-const sDefaultCoreRepository = 'https://github.com/hacesoft/hc-shared-app-core'
+const sDefaultCoreRepository = 'https://github.com/hacesoft/core'
 let oRegisteredApplication: Readonly<ApplicationRegistration> | null = null
 
 const repositorySlug = (sRepository: string): string => {

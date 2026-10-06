@@ -5,7 +5,7 @@ const fShowError = (oRoot: HTMLElement, sMessage: string): void => {
   oPanel.setAttribute('role', 'alert')
   const oTitle = document.createElement('h1'); oTitle.textContent = 'Aplikaci nelze spustit'
   const oText = document.createElement('p'); oText.textContent = sMessage
-  const oLink = document.createElement('a'); oLink.href = 'https://github.com/hacesoft/hc-shared-app-core/releases'; oLink.textContent = 'Stáhnout Shared App Core'
+  const oLink = document.createElement('a'); oLink.href = 'https://github.com/hacesoft/core/releases'; oLink.textContent = 'Stáhnout Shared App Core'
   oPanel.append(oTitle, oText, oLink); oRoot.replaceChildren(oPanel)
 }
 
@@ -23,7 +23,7 @@ const fStart = (): void => {
   oRoot.classList.add('hc-example-app')
   const oLayout = oCore.layout.createAppLayout(oRoot, { header: 'Ukázková aplikace', ariaLabel: 'Ukázková aplikace' })
   aCleanup.push(() => oLayout.destroy())
-  oCore.about.register({ id: 'hc_example_app', name: 'Ukázková aplikace', version: oRoot.dataset.appVersion ?? '1.0.0', repository: 'https://github.com/hacesoft/hc-shared-app-core' })
+  oCore.about.register({ id: 'hc_example_app', name: 'Ukázková aplikace', version: oRoot.dataset.appVersion ?? '1.0.0', repository: 'https://github.com/hacesoft/core' })
   const oToolbar = oCore.toolbar.create(oLayout.elements.toolbar, {
     actions: [
       { id: 'about', label: 'O aplikaci', onClick: () => {

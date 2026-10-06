@@ -38,8 +38,8 @@ final class ApiController extends Controller {
             'installedVersion' => $sInstalledVersion,
             'apiVersion' => Application::API_VERSION,
             'nextcloud' => ['min' => Application::NEXTCLOUD_MIN, 'max' => Application::NEXTCLOUD_MAX],
-            'repository' => 'https://github.com/hacesoft/hc-shared-app-core',
-            'downloadUrl' => 'https://github.com/hacesoft/hc-shared-app-core/releases',
+            'repository' => 'https://github.com/hacesoft/core',
+            'downloadUrl' => 'https://github.com/hacesoft/core/releases',
             'contract' => 'hc-shared-app-core-v1',
             'qualification' => 'pending-nc35-runtime',
         ]);

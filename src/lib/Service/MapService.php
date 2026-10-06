@@ -87,7 +87,7 @@ final class MapService {
                     $this->consumeRate('tile', (int)$this->config->getAppValue(Application::APP_ID, 'maps:tile-rpm', (string)self::DEFAULT_TILE_REQUESTS_PER_MINUTE));
                     $this->consumeRate('external', (int)$this->config->getAppValue(Application::APP_ID, 'maps:external-rpm', (string)self::DEFAULT_EXTERNAL_REQUESTS_PER_MINUTE));
                     $url = $this->providers->tileUrl($provider, $mapset, $tileSize, $z, $x, $y, $this->activeKey($provider));
-                    $headers = ['Accept' => 'image/png,image/jpeg,image/webp', 'User-Agent' => 'HC-Shared-App-Core/' . Application::VERSION . ' (+https://github.com/hacesoft/hc-shared-app-core)'];
+                    $headers = ['Accept' => 'image/png,image/jpeg,image/webp', 'User-Agent' => 'HC-Shared-App-Core/' . Application::VERSION . ' (+https://github.com/hacesoft/core)'];
                     if (!empty($entry['etag'])) $headers['If-None-Match'] = $entry['etag'];
                     if (!empty($entry['lastModified'])) $headers['If-Modified-Since'] = $entry['lastModified'];
                     $this->increment('external');

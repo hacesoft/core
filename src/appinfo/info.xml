@@ -10,8 +10,8 @@
     <author>Pavel Procházka</author>
     <namespace>HcSharedAppCore</namespace>
     <category>tools</category>
-    <bugs>https://github.com/hacesoft/hc-shared-app-core/issues</bugs>
-    <repository type="git">https://github.com/hacesoft/hc-shared-app-core.git</repository>
+    <bugs>https://github.com/hacesoft/core/issues</bugs>
+    <repository type="git">https://github.com/hacesoft/core.git</repository>
     <dependencies>
         <php min-version="8.2"/>
         <nextcloud min-version="35" max-version="35"/>

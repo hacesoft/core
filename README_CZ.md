@@ -8,6 +8,16 @@ Společné služby pro aplikace Nextcloud 35. Technické ID: `hc_shared_app_core
 
 Rozbalte celý zdrojový balíček a v jeho kořeni spusťte `sudo sh install.sh`. Součástí je sestavený runtime v `src/`, TypeScript zdroje v `build/`, instalační skripty i `uninstall.sh`. Podrobnosti a kontrola prostředí jsou v [návodu pro NAS](docs/cz/NAS_NC35_CZ.md).
 
+## Aplikace využívající Core
+
+Aplikace z dílny Hacesoft využívají společné služby tohoto Core:
+
+- [Žluté lístečky](https://github.com/hacesoft/nextcloud-stickynotes/blob/main/README.md) — osobní a sdílené poznámky, úkoly a widget Dashboardu.
+- [Playground](https://github.com/hacesoft/Playground) — ukázková a vývojová aplikace pro vyzkoušení služeb Core.
+- [GridSight](https://github.com/hacesoft/GridSight) — přehled FVE, spotřeby, baterie a cen elektřiny.
+
+Další připravované aplikace: Wiki, Počasí, Místa a navigace a Rodokmen. Odkazy budou doplněny po zveřejnění jejich repozitářů.
+
 ## Dokumentace
 
 - [Služby a API](docs/cz/CORE_NC35_CZ.md)

@@ -8,6 +8,16 @@ Shared services for Nextcloud 35 applications. Technical ID: `hc_shared_app_core
 
 Extract the full source package and run `sudo sh install.sh` from its root. It includes prebuilt runtime in `src/`, TypeScript sources in `build/`, installer scripts and `uninstall.sh`. Read the [NAS guide](docs/en/NAS_NC35_EN.md) for environment checks.
 
+## Applications using Core
+
+Hacesoft applications use the shared services provided by this Core:
+
+- [Sticky Notes](https://github.com/hacesoft/nextcloud-stickynotes/blob/main/README.md) — personal/shared notes, tasks and a Dashboard widget.
+- [Playground](https://github.com/hacesoft/Playground) — a demo and development application for exploring Core services.
+- [GridSight](https://github.com/hacesoft/GridSight) — PV, household consumption, battery and electricity price monitoring.
+
+Other applications in preparation: Wiki, Weather, Places and Navigation, and Family Tree. Links will be added when their repositories are published.
+
 ## Documentation
 
 - [Services and API](docs/en/CORE_NC35_EN.md)
