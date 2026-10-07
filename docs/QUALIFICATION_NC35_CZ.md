@@ -2,12 +2,12 @@
 
 # Provozní kvalifikace Shared App Core na NC35
 
-**Toto je jediný aktuální kvalifikační postup pro řadu Core 0.18.x (NC35-only).** Kandidát `0.18.0-dev.16` deklaruje v `info.xml` pouze Nextcloud 35 (`min-version=35`, `max-version=35`). NC34 není podporovaný testovací cíl tohoto kandidáta.
+**Toto je jediný aktuální kvalifikační postup pro řadu Core 0.18.x (NC35-only).** Core `0.18.1` deklaruje v `info.xml` pouze Nextcloud 35 (`min-version=35`, `max-version=35`). NC34 není podporovaný testovací cíl tohoto balíčku.
 
 ## Prostředí
 
 1. Použijte oddělenou nebo obnovitelnou kopii skutečného NC35 prostředí. Zaznamenejte přesnou verzi Nextcloudu, PHP, databáze, Redis a image/digest.
-2. Nainstalujte kandidáta běžným způsobem. Nepoužívejte force-enable a neměňte `info.xml`.
+2. Nainstalujte balíčku běžným způsobem. Nepoužívejte force-enable a neměňte `info.xml`.
 3. Před testem uchovejte zálohu kódu, DB, configu a dat.
 4. Lokální JS/PHP kontroly nejsou náhradou za runtime test na NC35.
 
@@ -19,7 +19,7 @@ Z kořene full-source balíku lze proti testovacímu NC35 kontejneru spustit:
 sh build/scripts/qualify-container.sh nextcloud-test35 35 8.5
 ```
 
-Třetí argument nastavte na skutečnou major.minor verzi PHP testovacího kontejneru. Skript kandidáta neinstaluje; ověřuje verze, OCC stav, PHP syntax a izolované nativní testy.
+Třetí argument nastavte na skutečnou major.minor verzi PHP testovacího kontejneru. Skript balíčku neinstaluje; ověřuje verze, OCC stav, PHP syntax a izolované nativní testy.
 
 ## Runtime matice NC35
 
@@ -55,4 +55,3 @@ npm run build
 
 Tyto testy ověřují zdrojový kontrakt a build, nikoli skutečný NAS runtime.
 
-Historický dvouverzový plán je zachován v `docs/archive/QUALIFICATION_NC34_NC35_CZ.md`.

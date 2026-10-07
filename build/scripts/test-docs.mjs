@@ -45,7 +45,7 @@ console.log('Documentation/reference contract check passed')
 
 const startupDoc = await readFile(new URL('docs/START_APLIKACE_CZ.md', oProject), 'utf8')
 for (const source of [sTemplate, sMain]) if (!startupDoc.includes(source.trimEnd())) throw new Error('Startup documentation drifted from tested reference')
-for (const doc of ['MIGRATION_NC35_FOR_APPS_CZ.md', 'QUALIFICATION_NC35_CZ.md', 'AUDIT_NC35_CZ.md', 'archive/QUALIFICATION_NC34_NC35_CZ.md']) await access(new URL('docs/' + doc, oProject))
+for (const doc of ['MIGRATION_NC35_FOR_APPS_CZ.md', 'QUALIFICATION_NC35_CZ.md', 'UPDATE_CHECK_CZ.md', 'UPDATE_CHECK_EN.md']) await access(new URL('docs/' + doc, oProject))
 
 
 let legacyQualificationAtRoot = false

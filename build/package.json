@@ -1,6 +1,6 @@
 {
   "name": "hc-shared-app-core",
-  "version": "0.18.0-dev.16",
+  "version": "0.18.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,8 @@
     "check": "tsc --noEmit && tsc --noEmit -p examples/empty-app/tsconfig.json && vitest run && node scripts/test-docs.mjs && node scripts/test-nc-range.mjs",
     "test": "vitest",
     "watch": "vite build --watch",
-    "check:php": "php tests/php/cache.php"
+    "check:php": "php tests/php/cache.php",
+    "check:releases": "php tests/php/releases.php"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",

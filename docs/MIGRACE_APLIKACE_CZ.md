@@ -17,4 +17,4 @@
 
 Výsledek migrace musí obsahovat seznam použitých služeb Core, zachovaných doménových částí, provedených testů a známých omezení.
 
-Pro historický přechod instalace z NC34 na současnou NC35 větev použijte [MIGRATION_NC35_FOR_APPS_CZ.md](MIGRATION_NC35_FOR_APPS_CZ.md); aktuální Core se na NC34 neinstaluje.
+Pro přechod instalace z NC34 na současnou NC35 větev použijte [MIGRATION_NC35_FOR_APPS_CZ.md](MIGRATION_NC35_FOR_APPS_CZ.md); aktuální Core se na NC34 neinstaluje.

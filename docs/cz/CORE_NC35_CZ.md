@@ -1,31 +1,26 @@
 [🇨🇿 Česky](../../README_CZ.md) | [🇬🇧 English](../../README.md)
 
-# Shared App Core pro Nextcloud 35 — stav a předání
+# Shared App Core pro Nextcloud 35 — veřejné API
 
-Core `0.18.0-dev.16` a Playground `0.18.0-dev.5` jsou **vývojové kandidáty**. Požadují NC35. Výsledky lokálních testů neprokazují kvalifikaci PHP, databáze, cache, GPS ani poskytovatelů map na NASu. Starší záznamy o NC34 jsou historický audit, ne aktuální slib podpory.
+Core `0.18.1` poskytuje společné služby aplikacím Hacesoft na Nextcloud 35. Instalační balík obsahuje sestavené soubory i zdrojový kód.
 
-Verze dev.6 opravuje balení plného zdrojového ZIPu: obsahuje všechny tři instalační skripty v kořenovém `scripts/`. Instalátor před prvním zásahem do Nextcloudu ověří také své soubory pro kontrolu schématu a cache.
 
 ## Jediný katalog
 
-| Služba | Veřejný vstup | Stav | Zkouška před vydáním |
-| --- | --- | --- | --- |
-| Spuštění | kostra `build/examples/empty-app`, `window.HcSharedAppCore` | implementováno | načtení, chyba chybějícího Core, odmountování |
-| Layout, dialogy, formuláře, oznámení, picker, nastavení | `layout`, `workspace`, `dialogs`, `forms`, `notifications`, `picker`, `settings` | dev.4: stabilní výška při pinch zoomu a předání vodorovného posunu, lokální testy | skutečný mobil, dva směry posunu, softwarová klávesnice |
-| Mapová proxy/cache/GPS | `maps`, `maps.favorites` | implementováno, lokální testy | skutečná dlaždice a GPS na NASu; viz `MAPS_API_CZ.md` |
-| Vnořené seznamy, místa a sdílení | `lists` | JS sestaveno a lokálně otestováno; nové PHP a migrace čekají na NC35 | migrace, souběh, práva user/group, restart |
-| Editor | `editor` | sestaveno a lokálně otestován bezpečný náhled | mobil a používání v aplikacích |
-| Společné pozadí aplikací | `background` | základ implementován a lokálně testován | převzetí vzhledu z existujících aplikací |
-| Správa úloh na pozadí | postup v `BACKGROUND_JOBS_CZ.md` | postup; bez společného runtime správce | identifikace osiřelých úloh na NASu |
+| Služba | Veřejný vstup |
+| --- | --- |
+| Spuštění | kostra `build/examples/empty-app`, `window.HcSharedAppCore` |
+| Layout, dialogy, formuláře, oznámení, picker, nastavení | `layout`, `workspace`, `dialogs`, `forms`, `notifications`, `picker`, `settings` |
+| Mapová proxy/cache/GPS | `maps`, `maps.favorites` |
+| Vnořené seznamy, místa a sdílení | `lists` |
+| Editor | `editor` |
+| Společné pozadí aplikací | `background` |
+| Správa úloh na pozadí | postup v `BACKGROUND_JOBS_CZ.md` |
 
-Položka „implementováno“ neznamená „ověřeno na NASu“ ani „vydáno“. Core samo nyní neregistruje žádný background job.
-
-
-Při `visualViewport.scale > 1` používá `layout.observe` pro výšku obalu nezmenšenou výšku stránky (`innerHeight`), zatímco viditelná výška zůstává v `metrics.viewportHeight` pro překryvná okna. Bez přiblížení výška dál reaguje na klávesnici. Společné posuvné oblasti nechávají vodorovný pohyb pokračovat na okraji stránky. Mapy a plátna mohou mít vlastní gesta. Stav jednotlivých aplikací je v [auditu layoutu](cz/AUDIT_LAYOUT_APLIKACI_CZ.md). Provozní ověření na NASu čeká.
 
 ## Seznamy a práva
 
-`lists` používá prostor aplikace (`namespace`), seznamy s `position`, `archived`, volitelným `parent_id`, vlastníka a sdílení na uživatele nebo skupinu s `read`/`edit`. Nová migrace ponechává staré seznamy jako kořenové a místa nepřepisuje. Rodič musí mít stejného vlastníka a prostor; přesun pod sebe nebo potomka se odmítne. Strom z vrácených `parent_id` sestaví aplikace.
+`lists` používá prostor aplikace (`namespace`), seznamy s `position`, `archived`, volitelným `parent_id`, vlastníka a sdílení na uživatele nebo skupinu s `read`/`edit`. Existující seznamy bez rodiče zůstávají kořenové; místa se nepřepisují. Rodič musí mít stejného vlastníka a prostor; přesun pod sebe nebo potomka se odmítne. Strom z vrácených `parent_id` sestaví aplikace.
 
 `read` čte seznam a jeho místa, `edit` mění seznam i místa, vlastník navíc upravuje sdílení a rodiče. Sdílení rodiče dědí podseznamy a jejich místa; přímé sdílení podseznamu může přístup rozšířit. Při překryvu oprávnění má `edit` přednost. Archivaci respektuje rozhraní; server zatím neblokuje zápis do archivovaných seznamů. Fyzické mazání seznamu není součástí API.
 
@@ -72,18 +67,8 @@ background.destroy()
 
 Veřejné režimy jsou `none`, `solid`, `gradient` a `image` s HTTPS URL bez přihlašovacích údajů. Core používá existující službu `settings`; každá aplikace musí zvolit vlastní namespace. Vlastní soubory obrázků, oprávnění a přesné vzhledy stávajících aplikací vyžadují jejich zdroje. Toto základní nastavení není jejich hotovou migrací.
 
-## Předání šesti aplikacím
 
-Tento text zatím **není konečný migrační pokyn**. Nejdřív na NC35 ověřte Core a Playground podle `NAS_NC35_CZ.md` a dodejte zdrojové kódy šesti aplikací. Aplikace použije dostupnou veřejnou službu Core, pokud ji potřebuje; vlastní doménová logika a ukládání dokumentů zůstávají v aplikaci. Při migraci se zachovávají data a cíleně se řeší stará ID a naplánované úlohy. Dokumenty `MIGRATION_NC35_FOR_APPS_CZ.md` a starší audit jsou historické podklady, neposílejte je jako finální instrukci.
-
-## Ověření vydání
-
-Plánováno → implementováno ve zdrojích → sestaveno a lokálně otestováno → ověřeno na NASu → vydáno. JS a sestavení dosáhly třetího kroku; nové PHP seznamů a databázové migrace vyžadují syntaktickou i provozní kontrolu na NC35. Kvalifikace potřebuje NC35 a příslušné logy; vydání GitHubu až po jejím dokončení.
-
-
-### Jednotný renderer (0.18.0-dev.14)
 Živý náhled a čtecí náhled spotřebitele mají používat stejný `core.editor.render()` a `hc-core-markdown`. Aplikační syntaxi doplňuje `decoratePreview`; aplikace nemá vytvářet paralelní Markdown parser. U samostatného `editor.render()` se dekorátor zavolá nad vráceným fragmentem. Viz `EDITOR_RENDERING_CZ.md`.
 
 
-### Optimistic concurrency (0.18.0-dev.14)
 Veřejné `core.concurrency` sjednocuje klientský revision/409 workflow a konflikt dialog. Serverová compare-and-swap kontrola zůstává povinností spotřebitele. Core jednotkové testy ověřují revision payload, rozpoznání 409 a volby dialogu; provozní multi-user test se provádí v konkrétní aplikaci.

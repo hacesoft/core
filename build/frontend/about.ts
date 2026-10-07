@@ -26,6 +26,9 @@ export interface UpdateResult extends ComponentInfo {
   checkedAt: number | null
   cached: boolean
   stale: boolean
+  source: string | null
+  sourceUrl: string | null
+  fileName: string | null
 }
 
 export interface UpdateSummary {
@@ -35,6 +38,7 @@ export interface UpdateSummary {
 
 export interface UpdateCheckOptions extends ComponentInfo {
   endpoint?: string
+  refresh?: boolean
 }
 
 export interface AboutOptions {
@@ -44,6 +48,7 @@ export interface AboutOptions {
   endpoint?: string
   heading?: string
   checkUpdates?: boolean
+  showMapsRuntime?: boolean
 }
 
 export interface AboutController {
@@ -59,6 +64,9 @@ interface ReleaseResponse {
   checkedAt?: number
   cached?: boolean
   stale?: boolean
+  source?: string
+  sourceUrl?: string
+  fileName?: string
 }
 
 const sDefaultCoreRepository = 'https://github.com/hacesoft/core'
@@ -77,7 +85,7 @@ const releaseEndpoint = (sEndpoint?: string): string => {
 }
 
 const resolveState = (sCurrent: string, sLatest: string): UpdateState => {
-  if (sCurrent === sLatest) return 'current'
+  if (isVersionAtLeast(sCurrent, sLatest) && isVersionAtLeast(sLatest, sCurrent)) return 'current'
   return isVersionAtLeast(sCurrent, sLatest) ? 'ahead' : 'update-available'
 }
 
@@ -85,6 +93,8 @@ export const checkComponentUpdate = async (oOptions: UpdateCheckOptions): Promis
   const sSlug = repositorySlug(oOptions.repository)
   const oUrl = new URL(releaseEndpoint(oOptions.endpoint), window.location.href)
   oUrl.searchParams.set('repository', sSlug)
+  oUrl.searchParams.set('appId', oOptions.id)
+  if (oOptions.refresh) oUrl.searchParams.set('refresh', '1')
   try {
     const oResponse = await fetch(oUrl.toString(), {
       credentials: 'same-origin',
@@ -106,6 +116,9 @@ export const checkComponentUpdate = async (oOptions: UpdateCheckOptions): Promis
       checkedAt: oPayload.checkedAt ?? null,
       cached: oPayload.cached ?? false,
       stale: oPayload.stale ?? false,
+      source: oPayload.source ?? null,
+      sourceUrl: oPayload.sourceUrl ?? null,
+      fileName: oPayload.fileName ?? null,
     })
   } catch {
     return Object.freeze({
@@ -119,6 +132,9 @@ export const checkComponentUpdate = async (oOptions: UpdateCheckOptions): Promis
       checkedAt: null,
       cached: false,
       stale: false,
+      source: null,
+      sourceUrl: null,
+      fileName: null,
     })
   }
 }
@@ -134,6 +150,9 @@ const unavailableResult = (oInfo: ComponentInfo): UpdateResult => ({
   checkedAt: null,
   cached: false,
   stale: false,
+  source: null,
+  sourceUrl: null,
+  fileName: null,
 })
 
 const registerApplication = (oApplication: ApplicationRegistration): Readonly<ApplicationRegistration> => {
@@ -223,6 +242,7 @@ const renderAbout = (oElement: HTMLElement, sHeading: string, oSummary: UpdateSu
     const oState = document.createElement('span')
     oState.className = 'hc-shared-app-core-about__state'
     oState.textContent = stateLabel(oResult.state)
+    if (oResult.sourceUrl) oState.title = oResult.sourceUrl + (oResult.fileName ? '\n' + oResult.fileName : '') + (oResult.stale ? '\nCache: stale' : oResult.cached ? '\nCache' : '')
     oRow.append(oName, oInstalled, oLatest, oState)
     oList.append(oRow)
   }
@@ -250,21 +270,21 @@ export const mountAbout = (oElement: HTMLElement, oOptions: AboutOptions = {}): 
   let sRuntime = 'Mapová cache: zjišťuji stav sdílených počítadel…'
   const fnRender = (oSummary: UpdateSummary): void => {
     renderAbout(oElement, sHeading, oSummary)
-    const oRuntime = document.createElement('p'); oRuntime.dataset.coreMapsRuntime = 'true'; oRuntime.textContent = sRuntime; oElement.append(oRuntime)
+    if (oOptions.showMapsRuntime) { const oRuntime = document.createElement('p'); oRuntime.dataset.coreMapsRuntime = 'true'; oRuntime.textContent = sRuntime; oElement.append(oRuntime) }
   }
   fnRender(oInitial)
-  void maps.runtime.get().then(oState => { sRuntime = 'Mapová cache: ' + oState.backend + (oState.available ? ' – dostupná sdílená počítadla' : ' – počítadla nedostupná') }, () => { sRuntime = 'Mapová cache: stav počítadel nelze ověřit' }).then(() => { if (!bDestroyed) { const oRuntime = oElement.querySelector('[data-core-maps-runtime]'); if (oRuntime) oRuntime.textContent = sRuntime } })
-  const fnRefresh = async (): Promise<UpdateSummary> => {
+  if (oOptions.showMapsRuntime) void maps.runtime.get().then(oState => { sRuntime = 'Mapová cache: ' + oState.backend + (oState.available ? ' – dostupná sdílená počítadla' : ' – počítadla nedostupná') }, () => { sRuntime = 'Mapová cache: stav počítadel nelze ověřit' }).then(() => { if (!bDestroyed) { const oRuntime = oElement.querySelector('[data-core-maps-runtime]'); if (oRuntime) oRuntime.textContent = sRuntime } })
+  const fnRefresh = async (bRefresh = true): Promise<UpdateSummary> => {
     const oSummary = oOptions.checkUpdates === false
       ? oInitial
       : fnSummary(...await Promise.all([
-          checkComponentUpdate({ ...oApplication, endpoint: oOptions.endpoint }),
-          checkComponentUpdate({ ...oCoreInfo, endpoint: oOptions.endpoint }),
+          checkComponentUpdate({ ...oApplication, endpoint: oOptions.endpoint, refresh: bRefresh }),
+          checkComponentUpdate({ ...oCoreInfo, endpoint: oOptions.endpoint, refresh: bRefresh }),
         ]))
     if (!bDestroyed) fnRender(oSummary)
     return oSummary
   }
-  void fnRefresh()
+  void fnRefresh(false)
   return Object.freeze({
     element: oElement,
     refresh: fnRefresh,

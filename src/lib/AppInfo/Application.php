@@ -12,7 +12,7 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 final class Application extends App implements IBootstrap {
     public const APP_ID = 'hc_shared_app_core';
     public const LEGACY_APP_ID = 'appcore';
-    public const VERSION = '0.18.0-dev.16';
+    public const VERSION = '0.18.1';
     public const API_VERSION = 1;
     public const NEXTCLOUD_MIN = 35;
     public const NEXTCLOUD_MAX = 35;

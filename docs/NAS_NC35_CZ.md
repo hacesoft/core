@@ -2,7 +2,7 @@
 
 # Provozní zkouška na NC35
 
-Zálohujte databázi a adresáře aplikací. Vývojové sestavení nejprve instalujte na testovací instanci, ne místo živého Core. Po sestavení ZIPů zkontrolujte, že oba obsahují nové JS assety, správné `info.xml` a požadovanou verzi Core.
+Zálohujte databázi a adresáře aplikací. Nové sestavení nejprve instalujte na testovací instanci, ne místo živého Core. Po sestavení ZIPů zkontrolujte, že oba obsahují nové JS assety, správné `info.xml` a požadovanou verzi Core.
 
 1. `sudo docker exec -u www-data nextcloud-app php occ status` — musí hlásit NC35 a `needsDbUpgrade: false` po dokončení upgradu aplikace.
 2. `sudo docker exec -i -u www-data nextcloud-app php < build/tools/verify-core-install.php` spusťte v kořeni zdrojového balíku; skript jen čte verzi a schéma tabulek `hc_core_lists`, `hc_core_places`, `hc_core_list_acl`, `hc_core_place_acl` a sloupce `parent_id`, `icon`. NC35 na cílovém NASu nepodporuje příkaz `migrations:migrate`.

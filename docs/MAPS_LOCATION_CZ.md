@@ -1,8 +1,8 @@
 [🇨🇿 Česky](../README_CZ.md) | [🇬🇧 English](../README.md)
 
-# Poloha a následování mapou — Core 0.17.0
+# Poloha a následování mapou
 
-Nové veřejné služby `maps.watchLocation()` a `maps.followLocation()` jsou doplňkové. Stávající aplikace nevyžadují změnu startu. Aplikace používající tyto služby musí deklarovat minimum Core 0.17.0. API verze zůstává 1.
+Nové veřejné služby `maps.watchLocation()` a `maps.followLocation()` jsou doplňkové. Stávající aplikace nevyžadují změnu startu. Aplikace používající tyto služby musí deklarovat minimum Core 0.18.1. API verze zůstává 1.
 
 ## Zapojení
 

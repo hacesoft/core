@@ -6,7 +6,7 @@ Od 0.16.1 je Guard krátká kontrola v aplikaci. **Žádný samostatný core-gua
 
 PHP pořadí je Core CSS → CSS aplikace → Core JS → JS aplikace. Bundle nenačítejte druhou cestou. Nextcloud spravuje URL/verzování assetů; nepřidávejte vlastní pevný ?v ani private oc_appswebroots. Hlavní aplikace po DOM ready ověří globál, API major a minimum Core ze svého manifestu. Chyba blokuje mount; vlastní root CSS třída se přidává až při úspěšném mountu.
 
-Následující dva bloky jsou přesnou kopií testované reference; kontrola dokumentace hlídá jejich shodu. PHP hodnoty dodává PageController přímo z manifestu. Pracovní minimum 0.18.0-dev.1 slouží jen kvalifikaci; stabilní minimum bude stanoveno vydáním.
+Následující dva bloky jsou přesnou kopií testované reference; kontrola dokumentace hlídá jejich shodu. PHP hodnoty dodává PageController přímo z manifestu. Referenční aplikace deklaruje minimální verzi Core v manifestu.
 
 ## Šablona
 

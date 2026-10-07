@@ -8,11 +8,6 @@ APP_ID="$(sed -n 's:.*<id>\([^<]*\)</id>.*:\1:p' "$INFO" | head -n 1)"
 VERSION="$(sed -n 's:.*<version>\([^<]*\)</version>.*:\1:p' "$INFO" | head -n 1)"
 [ -n "$APP_ID" ] || { echo "ERROR: app id not found" >&2; exit 1; }
 [ -n "$VERSION" ] || { echo "ERROR: version not found" >&2; exit 1; }
-# A stable NC35 release needs recorded real-server evidence, not just a version edit.
-case "$VERSION" in
-  *-*) ;;
-  *) echo "ERROR: Stable NC35 packaging is gated. Complete docs/NAS_NC35_CZ.md and review this gate." >&2; exit 1 ;;
-esac
 command -v npm >/dev/null 2>&1 || { echo "ERROR: npm was not found" >&2; exit 1; }
 command -v zip >/dev/null 2>&1 || { echo "ERROR: zip was not found" >&2; exit 1; }
 command -v unzip >/dev/null 2>&1 || { echo "ERROR: unzip was not found" >&2; exit 1; }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OCA\HcSharedAppCore\Controller;
 
 use OCA\HcSharedAppCore\AppInfo\Application;
+use OCA\HcSharedAppCore\Service\GitHubReleaseResolver;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -51,28 +52,38 @@ final class ApiController extends Controller {
 
     #[NoAdminRequired]
     #[NoCSRFRequired]
-    public function release(string $repository): JSONResponse {
+    public function release(string $repository, bool $refresh = false, string $appId = ''): JSONResponse {
         $this->requireUserId();
         $safeRepository = trim($repository);
         if (!preg_match('/^hacesoft\/[A-Za-z0-9_.-]{1,100}$/', $safeRepository)) {
             return new JSONResponse(['available' => false, 'error' => 'Unsupported repository.'], 400);
         }
 
-        $cacheKey = 'release-cache:' . strtolower($safeRepository);
+        $knownIds = ['hacesoft/core' => 'hc_shared_app_core', 'hacesoft/playground' => 'hc_shared_app_core_playground',
+            'hacesoft/gridsight' => 'hc_gridsight', 'hacesoft/nextcloud-stickynotes' => 'hc_stickynotes'];
+        $appId = $appId !== '' ? $appId : ($knownIds[strtolower($safeRepository)] ?? '');
+        if (!preg_match('/^[a-z][a-z0-9_]{1,63}$/', $appId)) {
+            return new JSONResponse(['available' => false, 'error' => 'A valid application ID is required.'], 400);
+        }
+        $cacheKey = 'release-cache:v3:' . strtolower($safeRepository) . ':' . $appId;
         $cached = json_decode($this->getMigratedAppValue($cacheKey, '{}'), true);
         $now = time();
-        if (is_array($cached) && isset($cached['checkedAt'], $cached['version'])
-            && $now - (int)$cached['checkedAt'] < 21600) {
+        if (!$refresh && is_array($cached) && isset($cached['checkedAt'])
+            && $now - (int)$cached['checkedAt'] < (!empty($cached['available']) ? 21600 : 300)) {
             $cached['cached'] = true;
             return new JSONResponse($cached);
         }
 
         try {
-            $release = $this->fetchLatestRelease($safeRepository);
+            $release = $this->fetchLatestRelease($safeRepository, $appId);
             $payload = [
                 'available' => true,
                 'repository' => $safeRepository,
-                'version' => $this->normalizeVersion((string)$release['tag']),
+                'appId' => $appId,
+                'version' => (string)$release['version'],
+                'source' => (string)$release['source'],
+                'sourceUrl' => (string)$release['sourceUrl'],
+                'fileName' => $release['fileName'] ?? null,
                 'tag' => (string)$release['tag'],
                 'url' => (string)$release['url'],
                 'checkedAt' => $now,
@@ -84,17 +95,18 @@ final class ApiController extends Controller {
             if (is_array($cached) && isset($cached['version'])) {
                 $cached['cached'] = true;
                 $cached['stale'] = true;
+                $cached['attemptedAt'] = $now;
                 return new JSONResponse($cached);
             }
-            return new JSONResponse([
-                'available' => false,
-                'repository' => $safeRepository,
-                'error' => 'Version check is temporarily unavailable.',
-            ]);
+            $payload = ['available' => false, 'repository' => $safeRepository,
+                'checkedAt' => $now, 'cached' => false,
+                'error' => 'Version check is temporarily unavailable.'];
+            $this->config->setAppValue(Application::APP_ID, $cacheKey, json_encode($payload, JSON_THROW_ON_ERROR));
+            return new JSONResponse($payload);
         }
     }
 
-    private function fetchLatestRelease(string $repository): array {
+    private function fetchLatestRelease(string $repository, string $appId): array {
         $client = $this->clientService->newClient();
         $options = [
             'headers' => [
@@ -105,62 +117,7 @@ final class ApiController extends Controller {
             'timeout' => 8,
             'connect_timeout' => 4,
         ];
-        try {
-            $response = $client->get('https://api.github.com/repos/' . $repository . '/releases/latest', $options);
-            $data = json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-            if (!is_array($data) || empty($data['tag_name'])) {
-                throw new \RuntimeException('GitHub release response has no tag.');
-            }
-            return [
-                'tag' => (string)$data['tag_name'],
-                'url' => (string)($data['html_url'] ?? 'https://github.com/' . $repository . '/releases'),
-            ];
-        } catch (\Throwable) {
-            try {
-                $response = $client->get('https://api.github.com/repos/' . $repository . '/tags?per_page=1', $options);
-                $data = json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-                if (!is_array($data) || !isset($data[0]['name'])) {
-                    throw new \RuntimeException('GitHub repository has no tag.');
-                }
-                return [
-                    'tag' => (string)$data[0]['name'],
-                    'url' => 'https://github.com/' . $repository . '/releases',
-                ];
-            } catch (\Throwable) {
-                return $this->fetchLatestReleaseFile($client, $repository, $options);
-            }
-        }
-    }
-
-    private function fetchLatestReleaseFile(object $client, string $repository, array $options): array {
-        $response = $client->get('https://api.github.com/repos/' . $repository . '/contents/release', $options);
-        $data = json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        if (!is_array($data)) {
-            throw new \RuntimeException('GitHub release directory is unavailable.');
-        }
-        $candidates = [];
-        foreach ($data as $item) {
-            $name = is_array($item) ? (string)($item['name'] ?? '') : '';
-            if (preg_match('/(?:^|[-_v])([0-9]+\.[0-9]+\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?)(?:\.|$)/', $name, $match)) {
-                $candidates[] = [
-                    'tag' => $match[1],
-                    'url' => (string)($item['html_url'] ?? 'https://github.com/' . $repository . '/tree/main/release'),
-                ];
-            }
-        }
-        if ($candidates === []) {
-            throw new \RuntimeException('GitHub repository has no semantic release file.');
-        }
-        usort($candidates, static fn (array $left, array $right): int => version_compare($right['tag'], $left['tag']));
-        return $candidates[0];
-    }
-
-    private function normalizeVersion(string $tag): string {
-        $version = preg_replace('/^[^0-9]*/', '', trim($tag)) ?? '';
-        if (!preg_match('/^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$/', $version)) {
-            throw new \RuntimeException('GitHub tag is not a semantic version.');
-        }
-        return $version;
+        return (new GitHubReleaseResolver())->resolve($client, $repository, $options, $appId);
     }
 
     #[NoAdminRequired]

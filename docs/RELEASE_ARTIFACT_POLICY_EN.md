@@ -2,7 +2,7 @@
 
 # Shared App Core — release artifact policy
 
-This policy is mandatory for `hc_shared_app_core` starting with **0.18.0-dev.11**. Release artifacts must be deterministic and must not contain accidental development output.
+This policy is mandatory for `hc_shared_app_core` . Release artifacts must be deterministic and must not contain accidental development output.
 
 ## Source maps
 
@@ -26,4 +26,4 @@ The full-source ZIP contains source code, documentation, build/test scripts and 
 
 ## Version immutability
 
-An already handed-off package is not silently rebuilt under the same version when release policy changes. This policy therefore starts in `0.18.0-dev.11` instead of repacking `0.18.0-dev.10`.
+

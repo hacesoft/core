@@ -2,7 +2,7 @@
 
 # Editor a jednotné vykreslení Markdownu
 
-Platí od kandidáta **0.18.0-dev.12**.
+Platí od balíčku **0.18.1**.
 
 ## Závazný princip
 

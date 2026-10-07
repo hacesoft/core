@@ -10,7 +10,7 @@ const core = browser.HcSharedAppCore
 for (const method of ['watchLocation', 'followLocation']) {
   if (typeof core?.maps?.[method] !== 'function') throw new Error('Missing maps.' + method)
 }
-if (!core || core.version !== '0.18.0-dev.16' || core.apiVersion !== 1 || !core.layout || !core.about || !core.updates || !core.maps || !core.maps.favorites || !core.maps.providers || !core.maps.diagnostics || !core.maps.cache || typeof core.maps.cache.openSettings !== 'function' || !core.concurrency || typeof core.concurrency.withExpectedRevision !== 'function' || typeof core.concurrency.isConflict !== 'function' || typeof core.concurrency.resolveConflict !== 'function' || typeof core.concurrency.watchRevision !== 'function') {
+if (!core || core.version !== '0.18.1' || core.apiVersion !== 1 || !core.layout || !core.about || !core.updates || !core.maps || !core.maps.favorites || !core.maps.providers || !core.maps.diagnostics || !core.maps.cache || typeof core.maps.cache.openSettings !== 'function' || !core.concurrency || typeof core.concurrency.withExpectedRevision !== 'function' || typeof core.concurrency.isConflict !== 'function' || typeof core.concurrency.resolveConflict !== 'function' || typeof core.concurrency.watchRevision !== 'function') {
   throw new Error('Built bundle does not publish the expected Core identity.')
 }
 

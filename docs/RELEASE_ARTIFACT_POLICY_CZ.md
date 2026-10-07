@@ -2,7 +2,7 @@
 
 # Shared App Core — pravidla release artefaktů
 
-Tento dokument je závazný pro `hc_shared_app_core` od **0.18.0-dev.11**. Cílem je, aby instalační balík obsahoval pouze runtime soubory a aby velikost balíků nebyla závislá na náhodně ponechaných vývojových artefaktech.
+Tento dokument je závazný pro `hc_shared_app_core` . Cílem je, aby instalační balík obsahoval pouze runtime soubory a aby velikost balíků nebyla závislá na náhodně ponechaných vývojových artefaktech.
 
 ## 1. Source mapy
 
@@ -50,4 +50,4 @@ Kontrola není doporučení; je to release gate.
 
 ## 5. Verze a neměnnost vydaných balíků
 
-Již předaný balík se nepřepisuje pod stejným číslem verze kvůli změně release politiky. Změna politiky dostává novou verzi. Proto bylo toto pravidlo zavedeno v `0.18.0-dev.11`, nikoli tichým přebalením `0.18.0-dev.10`.
+

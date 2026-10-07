@@ -5,7 +5,7 @@
     <name>Shared App Core</name>
     <summary>Shared services and UI foundations for self-hosted applications</summary>
     <description><![CDATA[Shared, versioned foundations used by multiple Nextcloud applications.]]></description>
-    <version>0.18.0-dev.16</version>
+    <version>0.18.1</version>
     <licence>AGPL-3.0-or-later</licence>
     <author>Pavel Procházka</author>
     <namespace>HcSharedAppCore</namespace>

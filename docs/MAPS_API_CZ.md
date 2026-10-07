@@ -16,6 +16,6 @@ const dialog = core.maps.cache.openSettings()
 
 Dialog zobrazuje skutečnou velikost, zaplnění, hit/miss, externí požadavky, chyby, poskytovatele a TTL. Změna je globální pro všechny aplikace. Mazání cache musí být výslovná administrátorská akce.
 
-## Poloha zařízení (od 0.17.0)
+## Poloha zařízení
 
 `maps.watchLocation()` poskytuje proud polohy, `maps.followLocation()` následování mapou. Úplný kontrakt, příklady a povinné propojení ručního panu: [MAPS_LOCATION_CZ.md](MAPS_LOCATION_CZ.md).
