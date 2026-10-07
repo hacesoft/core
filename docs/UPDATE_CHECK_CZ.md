@@ -81,3 +81,7 @@ V nástrojích prohlížeče → Síť otevřete odpověď `api/v1/release`. Obs
 Frontend: `cd build && npm run check && npm run build`. Samostatné PHP testy XML, ID, bezpečného načtení a záložních archivů: `cd build && npm run check:releases` (PHP s rozšířením SimpleXML). Testy nekontaktují GitHub ani Nextcloud.
 
 Specifikace: [GitHub Contents API](https://docs.github.com/en/rest/repos/contents).
+
+## Jazyk části O aplikaci
+
+Sdílená komponenta O aplikaci používá jazyk dokumentu Nextcloudu (jazyk účtu). Překládá názvy sloupců, stavy kontroly verzí, odkazy i volitelné informace o mapové mezipaměti. Podporuje cs, en, de, es, fr, it, nl, pl, pt, sk a uk; regionální varianty se převádějí na základní jazyk. Nepodporovaný jazyk nebo chybějící překlad použije angličtinu. Vlastní nadpis předaný aplikací zůstává řízený aplikací.

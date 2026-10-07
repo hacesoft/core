@@ -81,3 +81,7 @@ Inspect `api/v1/release` in browser developer tools → Network. Example:
 Frontend: `cd build && npm run check && npm run build`. Standalone PHP XML, ID, safe parsing and archive fallback tests: `cd build && npm run check:releases` (PHP with SimpleXML). Tests do not contact GitHub or Nextcloud.
 
 Specification: [GitHub Contents API](https://docs.github.com/en/rest/repos/contents).
+
+## About language
+
+The shared About component follows the Nextcloud document language (the account language). It translates column labels, update states, links and optional map cache information. Supported languages: cs, en, de, es, fr, it, nl, pl, pt, sk and uk; regional variants use the base language. Unsupported languages or missing translations fall back to English. A custom heading provided by the host application remains controlled by that application.

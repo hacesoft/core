@@ -1,3 +1,4 @@
+import { translateAbout as tr } from './about-i18n'
 import { maps } from './maps'
 import { CORE_VERSION, isVersionAtLeast } from './version'
 
@@ -190,10 +191,10 @@ export const checkRegisteredUpdates = async (sEndpoint?: string): Promise<Update
 }
 
 const stateLabel = (sState: UpdateState): string => ({
-  current: 'Aktuální',
-  'update-available': 'Dostupná aktualizace',
-  ahead: 'Novější než zveřejněná',
-  unavailable: 'Kontrola není dostupná',
+  current: tr('Current'),
+  'update-available': tr('Update available'),
+  ahead: tr('Newer than published'),
+  unavailable: tr('Update check unavailable'),
 })[sState]
 
 const appendLink = (oParent: HTMLElement, sLabel: string, sUrl: string): void => {
@@ -220,18 +221,18 @@ const renderAbout = (oElement: HTMLElement, sHeading: string, oSummary: UpdateSu
     const oLinks = document.createElement('span')
     oLinks.className = 'hc-shared-app-core-about__links'
     appendLink(oLinks, 'GitHub', oResult.repository)
-    appendLink(oLinks, 'Release Notes', oResult.releaseNotes ?? oResult.repository + '/releases')
-    if (oResult.documentation) appendLink(oLinks, 'Dokumentace', oResult.documentation)
+    appendLink(oLinks, tr('Release Notes'), oResult.releaseNotes ?? oResult.repository + '/releases')
+    if (oResult.documentation) appendLink(oLinks, tr('Documentation'), oResult.documentation)
     oName.append(oTitle, oLinks)
     const oInstalled = document.createElement('div')
     const oInstalledLabel = document.createElement('small')
-    oInstalledLabel.textContent = 'Nainstalováno'
+    oInstalledLabel.textContent = tr('Installed')
     const oInstalledValue = document.createElement('strong')
     oInstalledValue.textContent = oResult.version
     oInstalled.append(oInstalledLabel, oInstalledValue)
     const oLatest = document.createElement('div')
     const oLatestLabel = document.createElement('small')
-    oLatestLabel.textContent = 'Nejnovější'
+    oLatestLabel.textContent = tr('Latest')
     oLatest.append(oLatestLabel)
     if (oResult.latestVersion) appendLink(oLatest, oResult.latestVersion, oResult.latestUrl)
     else {
@@ -242,7 +243,7 @@ const renderAbout = (oElement: HTMLElement, sHeading: string, oSummary: UpdateSu
     const oState = document.createElement('span')
     oState.className = 'hc-shared-app-core-about__state'
     oState.textContent = stateLabel(oResult.state)
-    if (oResult.sourceUrl) oState.title = oResult.sourceUrl + (oResult.fileName ? '\n' + oResult.fileName : '') + (oResult.stale ? '\nCache: stale' : oResult.cached ? '\nCache' : '')
+    if (oResult.sourceUrl) oState.title = oResult.sourceUrl + (oResult.fileName ? '\n' + oResult.fileName : '') + (oResult.stale ? '\n' + tr('Stale cached result') : oResult.cached ? '\n' + tr('Cached result') : '')
     oRow.append(oName, oInstalled, oLatest, oState)
     oList.append(oRow)
   }
@@ -265,15 +266,15 @@ export const mountAbout = (oElement: HTMLElement, oOptions: AboutOptions = {}): 
     core: oCoreResult,
   })
   const oInitial = fnSummary(unavailableResult(oApplication), unavailableResult(oCoreInfo))
-  const sHeading = oOptions.heading ?? 'O aplikaci'
+  const sHeading = oOptions.heading ?? tr('About application')
   oElement.classList.add('hc-shared-app-core-about')
-  let sRuntime = 'Mapová cache: zjišťuji stav sdílených počítadel…'
+  let sRuntime = tr('Map cache') + ': ' + tr('Checking shared counters…')
   const fnRender = (oSummary: UpdateSummary): void => {
     renderAbout(oElement, sHeading, oSummary)
     if (oOptions.showMapsRuntime) { const oRuntime = document.createElement('p'); oRuntime.dataset.coreMapsRuntime = 'true'; oRuntime.textContent = sRuntime; oElement.append(oRuntime) }
   }
   fnRender(oInitial)
-  if (oOptions.showMapsRuntime) void maps.runtime.get().then(oState => { sRuntime = 'Mapová cache: ' + oState.backend + (oState.available ? ' – dostupná sdílená počítadla' : ' – počítadla nedostupná') }, () => { sRuntime = 'Mapová cache: stav počítadel nelze ověřit' }).then(() => { if (!bDestroyed) { const oRuntime = oElement.querySelector('[data-core-maps-runtime]'); if (oRuntime) oRuntime.textContent = sRuntime } })
+  if (oOptions.showMapsRuntime) void maps.runtime.get().then(oState => { sRuntime = tr('Map cache') + ': ' + oState.backend + (oState.available ? ' – ' + tr('Shared counters available') : ' – ' + tr('Counters unavailable')) }, () => { sRuntime = tr('Map cache') + ': ' + tr('Could not check counters') }).then(() => { if (!bDestroyed) { const oRuntime = oElement.querySelector('[data-core-maps-runtime]'); if (oRuntime) oRuntime.textContent = sRuntime } })
   const fnRefresh = async (bRefresh = true): Promise<UpdateSummary> => {
     const oSummary = oOptions.checkUpdates === false
       ? oInitial
