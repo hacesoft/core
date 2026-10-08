@@ -2,7 +2,9 @@
 import { afterEach, expect, it } from 'vitest'
 import { about } from '../about'
 import { translateAbout } from '../about-i18n'
-afterEach(() => { document.documentElement.lang = '' })
+const ocWindow = window as unknown as { OC?: { getLanguage?: () => string } }
+const originalOC = ocWindow.OC
+afterEach(() => { document.documentElement.lang = ''; ocWindow.OC = originalOC })
 const app = { id: 'hc_shared_app_core_playground', name: 'Playground', version: '1.0.0', repository: 'https://github.com/hacesoft/Playground', documentation: 'https://github.com/hacesoft/Playground#readme' }
 it('renders shared About labels in English under an English account', () => {
  document.documentElement.lang = 'en-GB'
@@ -28,4 +30,23 @@ it('translates all About labels for each supported locale and handles regional v
    expect(translateAbout(label)).not.toBe(label)
   }
  }
+})
+
+it('uses the English account language ahead of a Czech HTML document', () => {
+ document.documentElement.lang = 'cs'
+ ocWindow.OC = { getLanguage: () => 'en' }
+ const host = document.createElement('div')
+ const controller = about.mount(host, { app, checkUpdates: false })
+ for (const label of ['About application','Installed','Latest','Update check unavailable','Documentation']) expect(host.textContent).toContain(label)
+ expect(host.textContent).not.toContain('Nainstalováno')
+ controller.destroy()
+})
+it('normalizes account locale and falls back to English for unsupported account languages', () => {
+ document.documentElement.lang = 'cs'
+ ocWindow.OC = { getLanguage: () => 'pt_BR' }
+ expect(translateAbout('Installed')).toBe('Instalada')
+ ocWindow.OC = { getLanguage: () => 'ja' }
+ expect(translateAbout('Installed')).toBe('Installed')
+ ocWindow.OC = { getLanguage: () => '' }
+ expect(translateAbout('Installed')).toBe('Nainstalováno')
 })

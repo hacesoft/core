@@ -1,4 +1,4 @@
-/** Shared About labels follow the Nextcloud document language, independently of the host app. */
+/** Shared About labels prefer the Nextcloud account language, independently of the host app. */
 const labels = ['About application', 'Current', 'Update available', 'Newer than published', 'Update check unavailable', 'Documentation', 'Installed', 'Latest', 'Release Notes', 'Cached result', 'Stale cached result', 'Map cache', 'Checking shared counters…', 'Shared counters available', 'Counters unavailable', 'Could not check counters'] as const
 const translations: Record<string, readonly string[]> = {
  cs: ['O aplikaci','Aktuální','Dostupná aktualizace','Novější než zveřejněná','Kontrola není dostupná','Dokumentace','Nainstalováno','Nejnovější','Poznámky k vydání','Výsledek z mezipaměti','Zastaralý výsledek z mezipaměti','Mapová cache','Zjišťuji stav sdílených počítadel…','Sdílená počítadla dostupná','Počítadla nedostupná','Stav počítadel nelze ověřit'],
@@ -13,7 +13,8 @@ const translations: Record<string, readonly string[]> = {
  uk: ['Про застосунок','Актуальна','Доступне оновлення','Новіша за опубліковану','Перевірка недоступна','Документація','Установлена','Найновіша','Примітки до випуску','Результат із кешу','Застарілий результат із кешу','Кеш карт','Перевірка спільних лічильників…','Спільні лічильники доступні','Лічильники недоступні','Не вдалося перевірити лічильники'],
 }
 export const translateAbout = (text: string): string => {
- const locale = (document.documentElement.lang || navigator.language || 'en').toLowerCase().split(/[-_]/)[0]!
+ const oc = (window as unknown as { OC?: { getLanguage?: () => string } }).OC
+ const locale = (oc?.getLanguage?.() || document.documentElement.lang || 'en').toLowerCase().split(/[-_]/)[0]!
  const index = labels.indexOf(text as typeof labels[number])
  return index < 0 ? text : translations[locale]?.[index] || text
 }

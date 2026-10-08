@@ -6,6 +6,13 @@ use OCA\HcSharedAppCore\Service\GitHubReleaseResolver as Resolver;
 function same(mixed $actual, mixed $expected): void {
     if ($actual !== $expected) throw new RuntimeException(var_export([$actual, $expected], true));
 }
+// App-config limits apply to failures and successful cached checks alike.
+$key = Resolver::cacheKey('hacesoft/Playground', 'hc_shared_app_core_playground');
+same(strlen($key) < 64, true);
+same($key, Resolver::cacheKey('hacesoft/playground', 'hc_shared_app_core_playground'));
+same($key !== Resolver::cacheKey('hacesoft/core', 'hc_shared_app_core'), true);
+same($key !== Resolver::cacheKey('hacesoft/Playground', 'another_app'), true);
+same(strlen(Resolver::cacheKey('hacesoft/' . str_repeat('r', 100), str_repeat('a', 64))) < 64, true);
 foreach ([
     'hc_stickynotes-2.0.11-source.zip' => '2.0.11',
     'hc-shared-app-core-0.18.0-dev.16-full-source.zip' => '0.18.0-dev.16',
@@ -36,13 +43,13 @@ final class Client {
 }
 $base = 'https://api.github.com/repos/hacesoft/core';
 $resolver = new Resolver();
-$xml = '<info><id>hc_shared_app_core</id><version>0.18.1</version></info>';
-same(Resolver::parseInfoXml($xml, 'hc_shared_app_core')['version'], '0.18.1');
+$xml = '<info><id>hc_shared_app_core</id><version>0.18.2</version></info>';
+same(Resolver::parseInfoXml($xml, 'hc_shared_app_core')['version'], '0.18.2');
 foreach ([
-    '<info><id>other</id><version>0.18.1</version></info>',
-    '<info><id>hc_shared_app_core</id><version>v0.18.1</version></info>',
-    '<info><id>hc_shared_app_core</id><version>0.18.1</version><version>9.0.0</version></info>',
-    '<info><id>hc_shared_app_core</id><version>0.18.1</info>',
+    '<info><id>other</id><version>0.18.2</version></info>',
+    '<info><id>hc_shared_app_core</id><version>v0.18.2</version></info>',
+    '<info><id>hc_shared_app_core</id><version>0.18.2</version><version>9.0.0</version></info>',
+    '<info><id>hc_shared_app_core</id><version>0.18.2</info>',
     '<!DOCTYPE info [<!ENTITY x SYSTEM "file:///etc/passwd">]><info><id>hc_shared_app_core</id><version>&x;</version></info>',
 ] as $bad) {
     $rejected = false;
@@ -51,7 +58,7 @@ foreach ([
 }
 $files = [
     ['type'=>'file', 'name'=>'core-0.18.0-dev.9-source.zip', 'html_url'=>'old'],
-    ['type'=>'file', 'name'=>'core-0.18.1-full-source.zip', 'html_url'=>'new'],
+    ['type'=>'file', 'name'=>'core-0.18.2-full-source.zip', 'html_url'=>'new'],
     ['type'=>'dir', 'name'=>'core-99.0.0.zip'],
     ['type'=>'file', 'name'=>'notes-99.0.0.md'],
 ];
@@ -59,13 +66,13 @@ $infoUrl = $base.'/contents/src/appinfo/info.xml';
 $metadata = ['type'=>'file', 'encoding'=>'base64', 'content'=>base64_encode($xml), 'html_url'=>'xml-link'];
 $client = new Client([$infoUrl=>$metadata, $base.'/contents/release'=>[['type'=>'file','name'=>'core-99.0.0.zip']]]);
 $result = $resolver->resolve($client, 'hacesoft/core', [], 'hc_shared_app_core');
-same($result['version'], '0.18.1');
+same($result['version'], '0.18.2');
 same($result['source'], 'appinfo-xml');
 same($result['fileName'], 'src/appinfo/info.xml');
 same(count($client->calls), 1);
 $client = new Client([$base.'/contents/release'=>$files]);
 $result = $resolver->resolve($client, 'hacesoft/core', [], 'hc_shared_app_core');
-same($result['version'], '0.18.1');
+same($result['version'], '0.18.2');
 same($result['source'], 'release-directory');
 same(count($client->calls), 2);
 $metadata['content'] = base64_encode('<info><id>other</id><version>9.0.0</version></info>');

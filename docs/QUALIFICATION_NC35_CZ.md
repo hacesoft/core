@@ -2,7 +2,7 @@
 
 # Provozní kvalifikace Shared App Core na NC35
 
-**Toto je jediný aktuální kvalifikační postup pro řadu Core 0.18.x (NC35-only).** Core `0.18.1` deklaruje v `info.xml` pouze Nextcloud 35 (`min-version=35`, `max-version=35`). NC34 není podporovaný testovací cíl tohoto balíčku.
+**Toto je jediný aktuální kvalifikační postup pro řadu Core 0.18.x (NC35-only).** Core `0.18.2` deklaruje v `info.xml` pouze Nextcloud 35 (`min-version=35`, `max-version=35`). NC34 není podporovaný testovací cíl tohoto balíčku.
 
 ## Prostředí
 

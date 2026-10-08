@@ -6,6 +6,11 @@ namespace OCA\HcSharedAppCore\Service;
 
 /** Public GitHub metadata only; filenames are never treated as complete versions. */
 final class GitHubReleaseResolver {
+    /** Keep Nextcloud app-config keys below its 64-character limit, for every valid repository/ID. */
+    public static function cacheKey(string $repository, string $appId): string {
+        return 'release-cache:v4:' . substr(hash('sha256', strtolower($repository) . ':' . $appId), 0, 40);
+    }
+
     private const SEMVER = '(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?';
 
     public static function normalizeTag(string $tag): string {

@@ -1,4 +1,4 @@
-export const CORE_VERSION = '0.18.1'
+export const CORE_VERSION = '0.18.2'
 export const API_VERSION = 1
 
 // Same SemVer precedence as bootstrap; malformed public input throws.

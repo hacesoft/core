@@ -9,11 +9,11 @@ Veřejným vstupem je `window.HcSharedAppCore` (API 1). Obsahuje `version`, `api
 Typy jsou v `build/frontend/index.ts`, `lists.ts`, `editor.ts`, `background.ts` a dalších modulech. Úplný startovací příklad: `build/examples/empty-app/`. Editor ukládání neprovádí; seznamy mají vlastní databázovou migraci. Seznamy ani editor nejsou kvalifikovány na NASu. Dřívější dokumenty o NC34 jsou archivní.
 
 
-## Editor – rendering contract 0.18.1
+## Editor – rendering contract 0.18.2
 `editor.create()` a `editor.render()` používají stejný bezpečný Markdown renderer. Renderované plochy používají třídu `hc-core-markdown`. `editor.create()` přijímá `decoratePreview(fragment, markdown)`; při samostatném `editor.render()` spotřebitel stejný dekorátor zavolá nad vráceným bezpečným fragmentem. Viz `EDITOR_RENDERING_CZ.md`.
 
 
-## Concurrency – společný klientský kontrakt 0.18.1
+## Concurrency – společný klientský kontrakt 0.18.2
 
 `core.concurrency` sjednocuje klientskou část optimistic concurrency. `withExpectedRevision(payload, revision)` přidá `expectedRevision`, `isConflict(...)` rozpozná HTTP 409, `mergeText(base, local, remote)` konzervativně sloučí nekolizní textové změny, `resolveConflict(...)` otevře standardní konflikt dialog a `watchRevision(...)` poskytuje lehký periodický dohled nad revizí otevřeného objektu. Watcher není zámek ani zdroj pravdy; serverový CAS zůstává povinný.
 

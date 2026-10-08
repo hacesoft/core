@@ -1,6 +1,6 @@
 [🇨🇿 Česky](../README_CZ.md) | [🇬🇧 English](../README.md)
 
-# Shared App Core 0.18.1
+# Shared App Core 0.18.2
 
 Shared App Core poskytuje společné služby aplikacím Hacesoft pro Nextcloud 35.
 

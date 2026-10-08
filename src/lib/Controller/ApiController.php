@@ -65,7 +65,7 @@ final class ApiController extends Controller {
         if (!preg_match('/^[a-z][a-z0-9_]{1,63}$/', $appId)) {
             return new JSONResponse(['available' => false, 'error' => 'A valid application ID is required.'], 400);
         }
-        $cacheKey = 'release-cache:v3:' . strtolower($safeRepository) . ':' . $appId;
+        $cacheKey = GitHubReleaseResolver::cacheKey($safeRepository, $appId);
         $cached = json_decode($this->getMigratedAppValue($cacheKey, '{}'), true);
         $now = time();
         if (!$refresh && is_array($cached) && isset($cached['checkedAt'])

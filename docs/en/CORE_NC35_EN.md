@@ -2,7 +2,7 @@
 
 # Shared App Core for Nextcloud 35 — status and handoff
 
-Core `0.18.1` provides shared services for Hacesoft applications on Nextcloud 35. The installation package includes prebuilt runtime and source code.
+Core `0.18.2` provides shared services for Hacesoft applications on Nextcloud 35. The installation package includes prebuilt runtime and source code.
 
 Dev.6 fixes the full-source ZIP packaging: all three installer scripts are present in its top-level `scripts/` directory. Before touching Nextcloud, the installer also checks its schema and cache verification files.
 
@@ -69,5 +69,5 @@ background.destroy()
 Public modes are `none`, `solid`, `gradient` and `image` with a credential-free HTTPS URL. Core uses its existing `settings` service and requires an app-specific namespace. App-owned image files, permissions and exact appearance migration require source code from the consuming apps. This base service does not migrate their old preferences.
 
 
-## Optimistic concurrency (0.18.1)
+## Optimistic concurrency (0.18.2)
 The public `core.concurrency` service standardizes the client revision/409 workflow and conflict dialog. Atomic compare-and-swap remains the consuming app's server responsibility. Core unit tests cover revision payloads, 409 recognition and dialog choices; real multi-user behavior is qualified in each consuming app.

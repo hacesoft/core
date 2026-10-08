@@ -40,7 +40,7 @@ Tags and `/releases/latest` are no longer requested. Valid XML takes precedence 
 
 SemVer precedence applies: `1.10.0 > 1.9.0`, `dev.16 > dev.9`, stable `1.0.0 > 1.0.0-rc.1`. Build metadata does not change precedence. XML contains a plain version, such as `<version>2.0.11</version>`.
 
-Fallback archives end with `.zip`, `.tar.gz` or `.tgz`. Optional packaging suffixes are `-source`, `-full-source`, `-runtime`, `-install` and `-bundle`, also with underscores. `hc_stickynotes-2.0.11-source.zip` provides `2.0.11`; `hc-shared-app-core-0.18.1-full-source.zip` provides `0.18.1`. Upload dates and file sizes are ignored. Equal-version candidates are selected deterministically by link URL.
+Fallback archives end with `.zip`, `.tar.gz` or `.tgz`. Optional packaging suffixes are `-source`, `-full-source`, `-runtime`, `-install` and `-bundle`, also with underscores. `hc_stickynotes-2.0.11-source.zip` provides `2.0.11`; `hc-shared-app-core-0.18.2-full-source.zip` provides `0.18.2`. Upload dates and file sizes are ignored. Equal-version candidates are selected deterministically by link URL.
 
 ## Cache and diagnostics
 
@@ -50,7 +50,7 @@ The browser requests the following server path through Nextcloud `OC.generateUrl
 /apps/hc_shared_app_core/api/v1/release?repository=hacesoft%2FGridSight&appId=hc_gridsight
 ```
 
-Nextcloud contacts the public GitHub API without a token or user data. Headers are `Accept: application/vnd.github+json`, `User-Agent: HC-Shared-App-Core/0.18.1`, and `X-GitHub-Api-Version: 2022-11-28`. Each request has an 8-second timeout and a 4-second connection timeout.
+Nextcloud contacts the public GitHub API without a token or user data. Headers are `Accept: application/vnd.github+json`, `User-Agent: HC-Shared-App-Core/0.18.2`, and `X-GitHub-Api-Version: 2022-11-28`. Each request has an 8-second timeout and a 4-second connection timeout.
 
 Results are stored in Core's Nextcloud app config under `release-cache:v3:<lowercase repository>:<app ID>`. Successful results are shared for 6 hours. Failures without a previous result are cached for 5 minutes. If GitHub fails and a previous result exists, it is returned with `stale: true` and `attemptedAt`.
 
@@ -84,4 +84,4 @@ Specification: [GitHub Contents API](https://docs.github.com/en/rest/repos/conte
 
 ## About language
 
-The shared About component follows the Nextcloud document language (the account language). It translates column labels, update states, links and optional map cache information. Supported languages: cs, en, de, es, fr, it, nl, pl, pt, sk and uk; regional variants use the base language. Unsupported languages or missing translations fall back to English. A custom heading provided by the host application remains controlled by that application.
+The shared About component first uses the account language from `OC.getLanguage()`. If unavailable, it falls back to the HTML document language and then English. It translates column labels, update states, links and optional map cache information. Supported languages: cs, en, de, es, fr, it, nl, pl, pt, sk and uk; regional variants use the base language. Unsupported languages or missing translations fall back to English. A custom heading provided by the host application remains controlled by that application.

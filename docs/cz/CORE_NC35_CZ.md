@@ -2,7 +2,7 @@
 
 # Shared App Core pro Nextcloud 35 — veřejné API
 
-Core `0.18.1` poskytuje společné služby aplikacím Hacesoft na Nextcloud 35. Instalační balík obsahuje sestavené soubory i zdrojový kód.
+Core `0.18.2` poskytuje společné služby aplikacím Hacesoft na Nextcloud 35. Instalační balík obsahuje sestavené soubory i zdrojový kód.
 
 
 ## Jediný katalog

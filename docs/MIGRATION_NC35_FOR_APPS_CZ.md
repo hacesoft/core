@@ -2,7 +2,7 @@
 
 # Přechod aplikací z NC34 na NC35 – aktuální pravidla
 
-**Aktuální Shared App Core 0.18.1 je pouze pro Nextcloud 35.** Jeho `info.xml`, runtime `/status`, referenční empty-app, testy i kvalifikační postup musí uvádět rozsah `35–35`. Aktuální Core se na NC34 neinstaluje ani neforce-enable.
+**Aktuální Shared App Core 0.18.2 je pouze pro Nextcloud 35.** Jeho `info.xml`, runtime `/status`, referenční empty-app, testy i kvalifikační postup musí uvádět rozsah `35–35`. Aktuální Core se na NC34 neinstaluje ani neforce-enable.
 
 ## Závazný postup
 
