@@ -9,6 +9,6 @@ Types live in `build/frontend/index.ts`, `lists.ts`, `editor.ts`, `background.ts
 Required installer standard for each application: [safe deployment into `custom_apps`](SAFE_APP_DEPLOYMENT.md). The template includes `scripts/custom-apps-safety.sh` to move old duplicate trees before calling `occ`.
 
 
-## Concurrency — shared client contract 0.18.2
+## Concurrency — shared client contract 0.18.4
 
 `core.concurrency` standardizes the client side of optimistic concurrency. `withExpectedRevision(payload, revision)` adds `expectedRevision`, `isConflict(...)` recognizes HTTP 409, `mergeText(base, local, remote)` conservatively merges non-overlapping text changes, and `resolveConflict(...)` opens the shared conflict dialog. Core does not replace the consuming app's atomic compare-and-swap update. See `../MULTI_USER_CONCURRENCY_STANDARD_EN.md`.

@@ -1,6 +1,6 @@
 [🇨🇿 **Česky**](README_CZ.md) | [🇬🇧 English](README.md)
 
-# Shared App Core 0.18.2
+# Shared App Core 0.18.4
 
 Společné služby pro aplikace Nextcloud 35. Technické ID: `hc_shared_app_core`. Core poskytuje jednotný layout, nástrojové lišty, dialogy, formuláře, nastavení, oznámení, Markdown editor, mapové služby, seznamy, úlohy na pozadí a nástroje pro souběžnou práci uživatelů.
 

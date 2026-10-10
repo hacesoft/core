@@ -2,7 +2,7 @@
 
 # Shared App Core runtime qualification on NC35
 
-**This is the current qualification procedure for the Core 0.18.x line.** Core `0.18.2` declares Nextcloud 35 only (`min-version=35`, `max-version=35`). NC34 is not a supported test target for this version.
+**This is the current qualification procedure for the Core 0.18.x line.** Core `0.18.4` declares Nextcloud 35 only (`min-version=35`, `max-version=35`). NC34 is not a supported test target for this version.
 
 Use a restorable NC35 test environment, record the exact Nextcloud/PHP/database/Redis build, install without force-enable, and keep a code/database/config/data backup. Local JS/PHP checks do not replace runtime qualification.
 

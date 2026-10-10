@@ -40,7 +40,7 @@ Tagy ani API `/releases/latest` se již nevolají. Úspěšné XML má přednost
 
 Používá se SemVer: `1.10.0 > 1.9.0`, `dev.16 > dev.9`, finální `1.0.0 > 1.0.0-rc.1`. Build metadata `+build.2` pořadí nemění. XML obsahuje čistou verzi, například `<version>2.0.11</version>`.
 
-Záložní archivy končí `.zip`, `.tar.gz` nebo `.tgz`. Před příponou lze použít `-source`, `-full-source`, `-runtime`, `-install` nebo `-bundle`, také s podtržítky. `hc_stickynotes-2.0.11-source.zip` znamená `2.0.11`; `hc-shared-app-core-0.18.2-full-source.zip` znamená `0.18.2`. Čas nahrání ani velikost souboru nerozhodují. Při stejné verzi se výběr pro opakovatelný výsledek řídí adresou odkazu.
+Záložní archivy končí `.zip`, `.tar.gz` nebo `.tgz`. Před příponou lze použít `-source`, `-full-source`, `-runtime`, `-install` nebo `-bundle`, také s podtržítky. `hc_stickynotes-2.0.11-source.zip` znamená `2.0.11`; `hc-shared-app-core-0.18.4-full-source.zip` znamená `0.18.4`. Čas nahrání ani velikost souboru nerozhodují. Při stejné verzi se výběr pro opakovatelný výsledek řídí adresou odkazu.
 
 ## Cache a diagnostika
 
@@ -50,7 +50,7 @@ Prohlížeč volá přes Nextcloud `OC.generateUrl()` serverovou cestu:
 /apps/hc_shared_app_core/api/v1/release?repository=hacesoft%2FGridSight&appId=hc_gridsight
 ```
 
-Server komunikuje s veřejným GitHub API bez přihlašovacího tokenu a bez uživatelských dat. Posílá `Accept: application/vnd.github+json`, `User-Agent: HC-Shared-App-Core/0.18.2` a `X-GitHub-Api-Version: 2022-11-28`. Timeout požadavku je 8 sekund, spojení 4 sekundy.
+Server komunikuje s veřejným GitHub API bez přihlašovacího tokenu a bez uživatelských dat. Posílá `Accept: application/vnd.github+json`, `User-Agent: HC-Shared-App-Core/0.18.4` a `X-GitHub-Api-Version: 2022-11-28`. Timeout požadavku je 8 sekund, spojení 4 sekundy.
 
 Výsledek ukládá do Nextcloud app config Core pod `release-cache:v3:<repozitář malými písmeny>:<ID aplikace>`. Úspěšný výsledek platí 6 hodin a sdílí ho uživatelé instance. Neúspěch bez předchozího výsledku se ukládá na 5 minut. Při výpadku s dřívějším platným výsledkem se vrátí tento výsledek s `stale: true` a časem pokusu `attemptedAt`.
 

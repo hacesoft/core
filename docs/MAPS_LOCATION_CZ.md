@@ -2,7 +2,7 @@
 
 # Poloha a následování mapou
 
-Nové veřejné služby `maps.watchLocation()` a `maps.followLocation()` jsou doplňkové. Stávající aplikace nevyžadují změnu startu. Aplikace používající tyto služby musí deklarovat minimum Core 0.18.2. API verze zůstává 1.
+Nové veřejné služby `maps.watchLocation()` a `maps.followLocation()` jsou doplňkové. Stávající aplikace nevyžadují změnu startu. Aplikace používající tyto služby musí deklarovat minimum Core 0.18.4. API verze zůstává 1.
 
 ## Zapojení
 

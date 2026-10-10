@@ -2,7 +2,7 @@
 
 # Víceuživatelské změny a optimistic concurrency
 
-Platí od balíčku **Shared App Core 0.18.2**.
+Platí od balíčku **Shared App Core 0.18.4**.
 
 Tento standard řeší situaci, kdy dva uživatelé nebo dvě okna načtou stejnou verzi objektu a později jej oba chtějí uložit. Nejde o presence, collaborative editing ani dlouhodobý zámek.
 
@@ -83,7 +83,7 @@ Core je **finální společná klientská vrstva a UX kontrakt**, nikoli centrá
 
 ## Konzervativní sloučení textu
 
-Od `0.18.2` poskytuje Core také `core.concurrency.mergeText(base, local, remote)`. Je určen pro textové editory, které chtějí po HTTP 409 bezpečně sloučit změny provedené v různých částech stejného textu.
+Od `0.18.4` poskytuje Core také `core.concurrency.mergeText(base, local, remote)`. Je určen pro textové editory, které chtějí po HTTP 409 bezpečně sloučit změny provedené v různých částech stejného textu.
 
 Funkce používá společnou načtenou verzi `base` a nikdy nesmí obejít serverový CAS. Pokud lokální a vzdálená změna zasahují do různých oblastí původního textu, vrátí `status: "merged"` a sloučený text. Pokud se změny překrývají nebo je nelze jednoznačně oddělit, vrátí `status: "conflict"`. Implementace je úmyslně konzervativní: falešný konflikt je přijatelný, tiché přepsání cizího textu nikoli.
 
@@ -125,7 +125,7 @@ Presence („uživatel právě edituje“), heartbeat, WebSocket a společné ps
 
 ## Živá synchronizace otevřeného objektu
 
-Od `0.18.2` může spotřebitel použít `core.concurrency.watchRevision(...)`. Jde o lehký polling revize, nikoli o zámek ani realtime transport. Výchozí interval je 2 s, na skryté kartě se polling pozastaví a při návratu na kartu nebo focusu se provede okamžitá kontrola. Aplikace má načítat pouze malý revision/state endpoint a plný objekt stáhnout až po zjištění změny.
+Od `0.18.4` může spotřebitel použít `core.concurrency.watchRevision(...)`. Jde o lehký polling revize, nikoli o zámek ani realtime transport. Výchozí interval je 2 s, na skryté kartě se polling pozastaví a při návratu na kartu nebo focusu se provede okamžitá kontrola. Aplikace má načítat pouze malý revision/state endpoint a plný objekt stáhnout až po zjištění změny.
 
 ```js
 const watcher = core.concurrency.watchRevision({

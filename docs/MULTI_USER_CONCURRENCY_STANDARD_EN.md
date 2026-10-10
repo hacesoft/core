@@ -2,7 +2,7 @@
 
 # Multi-user changes and optimistic concurrency
 
-Applies from **Shared App Core 0.18.2**.
+Applies from **Shared App Core 0.18.4**.
 
 This contract protects a shared object when two users or two browser tabs load the same revision and later both try to save it. It is not presence, collaborative editing, or a long-lived mutex.
 
@@ -62,4 +62,4 @@ At minimum: two clients load revision 10; client A saves and gets 11; client B s
 
 ## Live synchronization of an open object
 
-Since `0.18.2`, consumers may use `core.concurrency.watchRevision(...)`. This is lightweight revision polling, not a lock or realtime transport. The default interval is 2 seconds; polling pauses while the tab is hidden and an immediate check runs on visibility/focus return. Consumers should poll a small revision/state endpoint and fetch the full object only when the revision changes. Server-side CAS remains authoritative.
+Since `0.18.4`, consumers may use `core.concurrency.watchRevision(...)`. This is lightweight revision polling, not a lock or realtime transport. The default interval is 2 seconds; polling pauses while the tab is hidden and an immediate check runs on visibility/focus return. Consumers should poll a small revision/state endpoint and fetch the full object only when the revision changes. Server-side CAS remains authoritative.

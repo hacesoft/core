@@ -86,8 +86,13 @@ $addIndex($placeAcl, ['target_type', 'target_id'], 'hc_place_acl_target');
 // Optional hierarchy fields on existing lists; never rewrite list/place rows.
 $lists = $schema->getTable($prefix . 'hc_core_lists');
 $addColumn($lists, 'parent_id', 'string', ['length' => 40, 'notnull' => false]);
-$addColumn($lists, 'icon', 'string', ['length' => 16, 'default' => '📁']);
+$addColumn($lists, 'icon', 'string', ['length' => 16, 'default' => '']);
 $addIndex($lists, ['namespace', 'parent_id'], 'hc_lists_parent');
+// Repair metadata only; existing list icons remain untouched.
+if ($lists->getColumn('icon')->getDefault() !== '') {
+    $lists->getColumn('icon')->setDefault('');
+    $changed = true;
+}
 
 $required = [];
 foreach (['hc_core_lists', 'hc_core_places', 'hc_core_list_acl', 'hc_core_place_acl'] as $logical) {
