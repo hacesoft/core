@@ -29,7 +29,6 @@ const browserQualification=text('build/tests/browser/nc35-qualification.js')
 assert.match(browserQualification,/nextcloud\?\.min === 35 && d\.nextcloud\?\.max === 35/)
 const qualifyScript=text('build/scripts/qualify-container.sh')
 assert.ok(!/34\|35|34 or 35|major 34/.test(qualifyScript),'Qualification script must be NC35-only')
-const qualificationDoc=text('docs/QUALIFICATION_NC35_CZ.md')
-assert.match(qualificationDoc,/min-version=35/);assert.match(qualificationDoc,/max-version=35/)
+// Qualification report is owner-only and deliberately excluded from public sources.
 
 console.log('NC35 metadata/status/static/qualification-range checks: PASS (not runtime qualification)')

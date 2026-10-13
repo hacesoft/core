@@ -6,6 +6,7 @@ namespace OCA\HcSharedAppCore\Controller;
 
 use OCA\HcSharedAppCore\AppInfo\Application;
 use OCA\HcSharedAppCore\Service\GitHubReleaseResolver;
+use OCA\HcSharedAppCore\Service\MutationLock;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -25,6 +26,7 @@ final class ApiController extends Controller {
         private IUserManager $userManager,
         private IGroupManager $groupManager,
         private IClientService $clientService,
+        private MutationLock $mutationLock,
     ) {
         parent::__construct(Application::APP_ID, $request);
     }
@@ -201,17 +203,20 @@ final class ApiController extends Controller {
     #[NoAdminRequired]
     public function addMapFavorite(array $favorite = []): JSONResponse {
         $userId = $this->requireUserId();
+        return $this->withFavoriteMutation($userId, function () use ($favorite): JSONResponse {
         $items = $this->loadMapFavorites($userId);
         $now = gmdate('c');
         $item = $this->validateMapFavorite($favorite, 'place_' . bin2hex(random_bytes(8)), $now, $now);
         $items[] = $item;
         $this->saveMapFavorites($userId, $items);
         return new JSONResponse(['item' => $item], 201);
+        });
     }
 
     #[NoAdminRequired]
     public function updateMapFavorite(string $id, array $changes = []): JSONResponse {
         $userId = $this->requireUserId();
+        return $this->withFavoriteMutation($userId, function () use ($id, $changes): JSONResponse {
         $items = $this->loadMapFavorites($userId);
         foreach ($items as $index => $existing) {
             if (($existing['id'] ?? '') !== $id) continue;
@@ -221,16 +226,29 @@ final class ApiController extends Controller {
             return new JSONResponse(['item' => $items[$index]]);
         }
         return new JSONResponse(['error' => 'Favorite place was not found.'], 404);
+        });
     }
 
     #[NoAdminRequired]
     public function deleteMapFavorite(string $id): JSONResponse {
         $userId = $this->requireUserId();
+        return $this->withFavoriteMutation($userId, function () use ($id): JSONResponse {
         $items = $this->loadMapFavorites($userId);
         $filtered = array_values(array_filter($items, static fn (array $item): bool => ($item['id'] ?? '') !== $id));
         if (count($filtered) === count($items)) return new JSONResponse(['error' => 'Favorite place was not found.'], 404);
         $this->saveMapFavorites($userId, $filtered);
         return new JSONResponse(['deleted' => true]);
+        });
+    }
+
+    /** Convert transient write contention to a stable API conflict response. */
+    private function withFavoriteMutation(string $userId, callable $operation): JSONResponse {
+        try {
+            return $this->mutationLock->synchronized('map:favorites', $userId, $operation);
+        } catch (\RuntimeException $e) {
+            if ($e->getCode() !== 409) throw $e;
+            return new JSONResponse(['error' => 'Another edit is in progress. Please retry.'], 409);
+        }
     }
 
     private function loadMapFavorites(string $userId): array {

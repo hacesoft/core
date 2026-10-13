@@ -17,6 +17,7 @@ final class ListsService {
         private IConfig $config,
         private IGroupManager $groups,
         private IUserManager $users,
+        private MutationLock $mutationLock,
     ) {}
 
     private function rows(string $table, array $where = []): array {
@@ -163,6 +164,9 @@ final class ListsService {
     }
 
     public function edit(string $namespace, string $uid, string $id, array $input): array {
+        // Serialize moves across the entire owner hierarchy, not only the edited list.
+        $list = $this->accessible($namespace, $id, $uid, 'edit');
+        return $this->mutationLock->synchronized('lists:' . $list['namespace'], $list['owner'], function () use ($namespace, $uid, $id, $input): array {
         $list = $this->accessible($namespace, $id, $uid, 'edit');
         $changes = [];
         if (array_key_exists('title', $input)) $changes['title'] = $this->title($input['title']);
@@ -181,6 +185,7 @@ final class ListsService {
             $this->update('hc_core_lists', $changes, ['id' => $id]);
         }
         return $this->accessible($namespace, $id, $uid);
+        });
     }
 
     public function places(string $namespace, string $uid, string $id): array {

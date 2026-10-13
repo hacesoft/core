@@ -1,0 +1,45 @@
+name: Core source validation
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: build/package-lock.json
+      - name: Shell syntax
+        run: |
+          find . -name '*.sh' -not -path './build/node_modules/*' -print0 | xargs -0 -r -n1 sh -n
+      - name: PHP syntax
+        run: |
+          find src scripts build/tests build/tools -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Mutation lock regression test
+        run: php build/tests/php/mutation_lock.php
+      - name: Offline safety checks
+        run: python3 scripts/check-uninstall-safety.py
+      - name: Public documentation isolation
+        run: python3 scripts/check-public-docs.py
+      - name: Release validator regression tests
+        run: python3 -m unittest discover -s scripts/tests -p "test_*.py"
+      - name: Frontend checks
+        working-directory: build
+        run: |
+          npm ci
+          npm run check
+      - name: Build and verify artifacts
+        run: sh build-release.sh
+      - name: Upload unsigned runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-unsigned-release
+          path: |
+            release/hc_shared_app_core-*.zip
+            release/SHA256SUMS-*.txt
+          if-no-files-found: error

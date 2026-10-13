@@ -35,23 +35,23 @@ RUNTIME_ITEMS="appinfo css js lib"
 for item in $RUNTIME_ITEMS; do [ -e "$SRC/$item" ] || { echo "ERROR: missing src/$item" >&2; exit 1; }; done
 STAGE="$ROOT/.build"; APP="$STAGE/$APP_ID"; SOURCE="$STAGE/hc-shared-app-core-$VERSION"; RELEASE="$ROOT/release"
 rm -rf "$STAGE"; mkdir -p "$APP" "$SOURCE" "$RELEASE"
-# release/ contains generated output only; keep one current runtime version.
-find "$RELEASE" -maxdepth 1 -type f \( -name "$APP_ID-*.zip" -o -name "$APP_ID-*.tar.gz" \) -delete
-find "$RELEASE" -maxdepth 1 -type f -name 'hc-shared-app-core-*-full-source.zip' -delete
 for item in $RUNTIME_ITEMS; do cp -R "$SRC/$item" "$APP/$item"; done
 cp "$ROOT/LICENSE" "$APP/LICENSE"
-(cd "$ROOT" && tar --exclude='build/node_modules' --exclude='build/examples/empty-app/node_modules' -cf - .gitignore LICENSE README.md README_CZ.md install.sh uninstall.sh build-release.sh scripts build docs src) | (cd "$SOURCE" && tar -xf -)
+(cd "$ROOT" && tar --exclude='build/node_modules' --exclude='build/examples/empty-app/node_modules' -cf - .gitignore LICENSE README.md README_CZ.md install.sh uninstall.sh build-release.sh scripts build docs src .github) | (cd "$SOURCE" && tar -xf -)
 for file in $INSTALL_FILES; do
  [ -f "$SOURCE/$file" ] || { echo "ERROR: source stage omits installer dependency: $file" >&2; exit 1; }
 done
+# Build into a private staging directory. A failed build must not destroy the last good release.
+OUTPUT="$STAGE/output"
+mkdir -p "$OUTPUT"
 (
  cd "$STAGE"
- tar -czf "$RELEASE/$APP_ID-$VERSION.tar.gz" "$APP_ID"
- if command -v zip >/dev/null 2>&1; then zip -qr "$RELEASE/$APP_ID-$VERSION.zip" "$APP_ID"; fi
- if command -v zip >/dev/null 2>&1; then zip -qr "$RELEASE/hc-shared-app-core-$VERSION-full-source.zip" "hc-shared-app-core-$VERSION"; fi
+ tar -czf "$OUTPUT/$APP_ID-$VERSION.tar.gz" "$APP_ID"
+ zip -qr "$OUTPUT/$APP_ID-$VERSION.zip" "$APP_ID"
+ zip -qr "$OUTPUT/hc-shared-app-core-$VERSION-full-source.zip" "hc-shared-app-core-$VERSION"
 )
-SOURCE_ZIP="$RELEASE/hc-shared-app-core-$VERSION-full-source.zip"
-RUNTIME_ZIP="$RELEASE/$APP_ID-$VERSION.zip"
+SOURCE_ZIP="$OUTPUT/hc-shared-app-core-$VERSION-full-source.zip"
+RUNTIME_ZIP="$OUTPUT/$APP_ID-$VERSION.zip"
 unzip -tqq "$SOURCE_ZIP"
 # Packaged artifacts must also satisfy the source-map ban.
 if unzip -Z1 "$SOURCE_ZIP" | grep -E '\.map$' >/dev/null; then
@@ -69,6 +69,14 @@ for file in $INSTALL_FILES; do
   echo "ERROR: source ZIP omits installer dependency: $file" >&2; exit 1;
  }
 done
+python3 "$ROOT/scripts/verify-release.py" "$RUNTIME_ZIP" "$SOURCE_ZIP" "$APP_ID" "$VERSION"
+# Publish atomically only after validation. Keep previous releases for rollback.
+for artifact in "$OUTPUT"/*; do
+ name="$(basename "$artifact")"
+ cp "$artifact" "$RELEASE/.$name.tmp.$$"
+ mv -f "$RELEASE/.$name.tmp.$$" "$RELEASE/$name"
+done
+(cd "$RELEASE" && sha256sum "$APP_ID-$VERSION.zip" "$APP_ID-$VERSION.tar.gz" "hc-shared-app-core-$VERSION-full-source.zip" > "SHA256SUMS-$VERSION.txt")
 rm -rf "$STAGE"
 echo "Built release/$APP_ID-$VERSION.tar.gz"
 [ -f "$RELEASE/$APP_ID-$VERSION.zip" ] && echo "Built release/$APP_ID-$VERSION.zip"

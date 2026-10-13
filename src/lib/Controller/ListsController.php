@@ -30,7 +30,7 @@ final class ListsController extends Controller {
         } catch (\InvalidArgumentException $e) {
             return new JSONResponse(['error' => $e->getMessage()], 400);
         } catch (\RuntimeException $e) {
-            $status = in_array($e->getCode(), [401, 403, 404], true) ? $e->getCode() : 500;
+            $status = in_array($e->getCode(), [401, 403, 404, 409], true) ? $e->getCode() : 500;
             return new JSONResponse(['error' => $status === 500 ? 'List operation failed.' : $e->getMessage()], $status);
         }
     }
